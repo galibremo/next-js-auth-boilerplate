@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
 import {
   DropdownMenu,
@@ -10,29 +10,48 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { CaretUpDownIcon, PlusIcon } from "@phosphor-icons/react"
+} from "@/components/ui/sidebar";
+import { CaretUpDownIcon, PlusIcon } from "@phosphor-icons/react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ComputerProtectionIcon,
+  DashboardSquare01Icon,
+  UserMultiple02Icon,
+} from "@hugeicons/core-free-icons";
 
-export function TeamSwitcher({
-  teams,
-}: {
-  teams: {
-    name: string
-    logo: React.ReactNode
-    plan: string
-  }[]
-}) {
-  const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+const apps = [
+  {
+    id: "1",
+    name: "App1",
+    logo: <HugeiconsIcon icon={ComputerProtectionIcon} />,
+    plan: "Plan1",
+  },
+  {
+    id: "2",
+    name: "App2",
+    logo: <HugeiconsIcon icon={DashboardSquare01Icon} />,
+    plan: "Plan2",
+  },
+  {
+    id: "3",
+    name: "App3",
+    logo: <HugeiconsIcon icon={UserMultiple02Icon} />,
+    plan: "Plan3",
+  },
+];
+
+export function AppSwitcher() {
+  const { isMobile } = useSidebar();
+  const [activeTeam, setActiveTeam] = React.useState(apps[0]);
 
   if (!activeTeam) {
-    return null
+    return null;
   }
 
   return (
@@ -63,7 +82,7 @@ export function TeamSwitcher({
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Teams
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {apps.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
                 onClick={() => setActiveTeam(team)}
@@ -87,5 +106,5 @@ export function TeamSwitcher({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }
