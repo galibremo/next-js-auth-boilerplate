@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/sidebar";
 import { getUserInitials } from "@/core/helper";
 import { useAuth } from "@/hooks/use-auth";
+import { useLogout } from "@/features/auth/login/actions/login.mutations";
 
 interface NavUserComponentProps {
   items: NavUserMaxItemProps;
@@ -34,6 +35,7 @@ interface NavUserComponentProps {
 export function NavUser(props: NavUserComponentProps) {
   const { isMobile } = useSidebar();
   const { user } = useAuth();
+  const { mutate: logout, isPending } = useLogout();
 
   if (!user) return null;
 
@@ -116,7 +118,7 @@ export function NavUser(props: NavUserComponentProps) {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => logout()} disabled={isPending}>
               <HugeiconsIcon icon={Logout03Icon} />
               Log out
             </DropdownMenuItem>
