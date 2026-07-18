@@ -24,16 +24,19 @@ import {
   loginSchema,
   type LoginSchemaType,
 } from "@/features/auth/login/schemas/login-schema";
+import { useLogin } from "@/features/auth/login/actions/login.mutations";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type LoginMode = "password" | "magic-link";
 
 export function LoginForm() {
   const [loginMode, setLoginMode] = useState<LoginMode>("password");
-  const [isLoggingInWithPassword, setIsLoggingInWithPassword] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<
     string | null
   >(null);
+
+  const { mutateAsync: login, isPending: isLoggingInWithPassword } =
+    useLogin();
 
   const { control: passwordControl, handleSubmit: handleSubmitPassword } =
     useForm<LoginSchemaType>({
@@ -41,7 +44,18 @@ export function LoginForm() {
       defaultValues: { email: "", password: "" },
     });
 
-  const handlePasswordSubmit = async (values: LoginSchemaType) => {};
+  const handlePasswordSubmit = async (values: LoginSchemaType) => {
+    setPasswordErrorMessage(null);
+    try {
+      await login(values);
+    } catch (error) {
+      setPasswordErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred. Please try again.",
+      );
+    }
+  };
 
   return (
     <>
