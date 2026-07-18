@@ -377,7 +377,7 @@ const passwordRules = [
 ];
 
 const passwordSchema = (name: string) =>
-	baseString(name, { min: 6 }).superRefine((val, ctx) => {
+	baseString(name, { min: 8, max: 128 }).superRefine((val, ctx) => {
 		passwordRules.forEach(rule => {
 			if (!rule.regex.test(val)) {
 				ctx.addIssue({ code: "custom", message: rule.msg(name) });
