@@ -8,12 +8,15 @@ export const route = {
   },
   protected: {
     login: "/login",
-    magicLinkSuccess: "/auth/magic-link/success",
-    twoFactorVerify: "/2fa/verify",
   },
 } as const;
 
-export const apiRoute = {} as const;
+export const apiRoute = {
+  users: "/users",
+  user: (id: string) => `/users/${id}`,
+  userRole: (id: string) => `/users/${id}/role`,
+  userSessionsRevoke: (id: string) => `/users/${id}/sessions/revoke`,
+} as const;
 
 const DEFAULT_LOGIN_REDIRECT = route.private.dashboard;
 
