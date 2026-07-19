@@ -29,14 +29,16 @@ export async function listUsers(
   const res = await fetchClient(`${apiRoute.users}${queryParams ? `?${queryParams}` : ""}`, {
     method: "GET",
   });
-  return res.json();
+  const json = await res.json();
+  return json.data;
 }
 
 export async function getUser(id: string): Promise<ManagedUser> {
   const res = await fetchClient(apiRoute.user(id), {
     method: "GET",
   });
-  return res.json();
+  const json = await res.json();
+  return json.data;
 }
 
 export async function createUser(data: CreateUserInput): Promise<ManagedUser> {
@@ -44,7 +46,8 @@ export async function createUser(data: CreateUserInput): Promise<ManagedUser> {
     method: "POST",
     body: JSON.stringify(data),
   });
-  return res.json();
+  const json = await res.json();
+  return json.data;
 }
 
 export async function updateUser({
@@ -55,7 +58,8 @@ export async function updateUser({
     method: "PATCH",
     body: JSON.stringify(data),
   });
-  return res.json();
+  const json = await res.json();
+  return json.data;
 }
 
 export async function updateUserRole({
@@ -66,7 +70,8 @@ export async function updateUserRole({
     method: "PATCH",
     body: JSON.stringify({ role }),
   });
-  return res.json();
+  const json = await res.json();
+  return json.data;
 }
 
 export async function deleteUser({
@@ -75,7 +80,8 @@ export async function deleteUser({
   const res = await fetchClient(apiRoute.user(id), {
     method: "DELETE",
   });
-  return res.json();
+  const json = await res.json();
+  return json.data;
 }
 
 export async function revokeUserSessions({
@@ -84,5 +90,6 @@ export async function revokeUserSessions({
   const res = await fetchClient(apiRoute.userSessionsRevoke(id), {
     method: "POST",
   });
-  return res.json();
+  const json = await res.json();
+  return json.data;
 }
