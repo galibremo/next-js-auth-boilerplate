@@ -3,7 +3,6 @@ import {
   DashboardSquare01Icon,
   UserGroupIcon,
   UserIcon,
-  UserMultiple02Icon,
 } from "@hugeicons/core-free-icons";
 
 import { route } from "@/routes/routes";
@@ -33,11 +32,6 @@ const navPlatformItem: NavItemProps[] = [
     url: route.private.users,
     icon: UserGroupIcon,
     roles: ["ADMIN", "SUPER_ADMIN"],
-  },
-  {
-    title: "Workspaces",
-    url: route.private.dashboard,
-    icon: UserMultiple02Icon,
   },
 ];
 
