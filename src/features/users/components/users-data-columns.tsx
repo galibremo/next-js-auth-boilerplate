@@ -66,23 +66,7 @@ export function createUserColumns({
 				</Badge>
 			)
 		},
-		{
-			accessorKey: "is2faEnabled",
-			header: ({ column }) => (
-				<DataTableColumnHeader
-					column={column}
-					title="2FA"
-					sort={sort}
-					dir={dir}
-					handleSorting={handleSorting}
-				/>
-			),
-			cell: ({ row }) => (
-				<Badge variant={row.original.is2faEnabled ? "outline" : "secondary"}>
-					{row.original.is2faEnabled ? "Enabled" : "Off"}
-				</Badge>
-			)
-		},
+
 		{
 			accessorKey: "activeSessionCount",
 			header: ({ column }) => (

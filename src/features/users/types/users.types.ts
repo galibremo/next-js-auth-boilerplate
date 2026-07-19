@@ -4,7 +4,6 @@ export const userSortValues = [
 	"name",
 	"email",
 	"emailVerified",
-	"is2faEnabled",
 	"role",
 	"activeSessionCount",
 	"createdAt",
@@ -18,7 +17,6 @@ export interface ManagedUser {
 	email: string;
 	image: string | null;
 	emailVerified: boolean;
-	is2faEnabled: boolean;
 	role: UserRole;
 	activeSessionCount: number;
 	createdAt: string;
@@ -77,11 +75,3 @@ export interface RevokeUserSessionsResponse {
 	revokedCount: number;
 }
 
-export interface ResetUserTwoFactorInput {
-	id: string;
-}
-
-export interface ResetUserTwoFactorResponse {
-	reset: boolean;
-	revokedCount: number;
-}

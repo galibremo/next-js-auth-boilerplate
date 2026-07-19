@@ -4,7 +4,6 @@ import {
   ComputerRemoveIcon,
   Delete02Icon,
   EyeIcon,
-  LockKeyIcon,
   MoreVerticalIcon,
   UserEdit01Icon,
 } from "@hugeicons/core-free-icons";
@@ -83,17 +82,7 @@ export function UserDataTableRowActions({
             Change role
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            variant="destructive"
-            disabled={!actions.manageable || !user.is2faEnabled}
-            onSelect={(event) => {
-              event.preventDefault();
-              actions.setResetTwoFactorDialogOpen(true);
-            }}
-          >
-            <HugeiconsIcon icon={LockKeyIcon} />
-            Reset 2FA
-          </DropdownMenuItem>
+
           <DropdownMenuItem
             variant="destructive"
             disabled={!actions.manageable || user.activeSessionCount === 0}

@@ -40,8 +40,6 @@ export function useUserActions(user: ManagedUser) {
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [revokeDialogOpen, setRevokeDialogOpen] = useState(false);
-  const [resetTwoFactorDialogOpen, setResetTwoFactorDialogOpen] =
-    useState(false);
   const [nextRole, setNextRole] = useState<UserRole>(user.role);
 
   const manageable = canManageUser(currentUser, user);
@@ -154,8 +152,6 @@ export function useUserActions(user: ManagedUser) {
     setDeleteDialogOpen,
     revokeDialogOpen,
     setRevokeDialogOpen,
-    resetTwoFactorDialogOpen,
-    setResetTwoFactorDialogOpen,
     handleUpdateUser,
     handleUpdateRole,
     handleRevokeSessions,

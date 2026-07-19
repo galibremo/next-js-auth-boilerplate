@@ -69,9 +69,7 @@ export function UserDetailsDialog({ user, open, onOpenChange }: UserDetailsDialo
 										<Badge variant={detailUser.emailVerified ? "default" : "secondary"}>
 											{detailUser.emailVerified ? "Email verified" : "Email unverified"}
 										</Badge>
-										<Badge variant={detailUser.is2faEnabled ? "outline" : "secondary"}>
-											{detailUser.is2faEnabled ? "2FA enabled" : "2FA off"}
-										</Badge>
+
 									</div>
 								</div>
 							</section>
@@ -93,10 +91,7 @@ export function UserDetailsDialog({ user, open, onOpenChange }: UserDetailsDialo
 								<h3 className="text-sm font-medium">Access and sessions</h3>
 								<div className="grid gap-3 sm:grid-cols-2">
 									<DetailItem label="Role" value={formatUserRole(detailUser.role)} />
-									<DetailItem
-										label="Two-factor authentication"
-										value={detailUser.is2faEnabled ? "Enabled" : "Off"}
-									/>
+
 									<DetailItem
 										label="Active sessions"
 										value={`${detailUser.activeSessionCount} active session${
@@ -156,7 +151,6 @@ function UserDetailsSkeleton() {
 					<Skeleton className="h-4 w-64 max-w-full" />
 					<div className="flex gap-2">
 						<Skeleton className="h-5 w-20" />
-						<Skeleton className="h-5 w-24" />
 						<Skeleton className="h-5 w-24" />
 					</div>
 				</div>
