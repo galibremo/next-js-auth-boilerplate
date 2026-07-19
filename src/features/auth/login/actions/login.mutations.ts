@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
-import { login, logout } from "./login.actions";
+import { login, logout, googleLogin } from "./login.actions";
 
 export const useLogin = () => {
   const { setUser } = useAuth();
@@ -31,6 +31,21 @@ export const useLogout = () => {
       queryClient.clear();
       toast.success("Logged out successfully");
       router.push("/login");
+      router.refresh();
+    },
+  });
+};
+
+export const useGoogleLogin = () => {
+  const { setUser } = useAuth();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: googleLogin,
+    onSuccess: (user) => {
+      setUser(user);
+      toast.success("Logged in with Google successfully");
+      router.push("/");
       router.refresh();
     },
   });
