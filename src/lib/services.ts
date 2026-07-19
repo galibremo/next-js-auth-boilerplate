@@ -1,8 +1,9 @@
-"use server";
+import { cache } from "react";
+import { cookies } from "next/headers";
 
-export async function getSessionUser(
-  cookieString: string,
-): Promise<AuthUser | null> {
+export const getSessionUser = cache(async (): Promise<AuthUser | null> => {
+  const cookieStore = await cookies();
+  const cookieString = cookieStore.toString();
   if (!cookieString) return null;
 
   try {
@@ -24,4 +25,4 @@ export async function getSessionUser(
     console.error("Failed to fetch session on server:", error);
   }
   return null;
-}
+});
