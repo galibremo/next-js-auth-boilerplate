@@ -14,6 +14,8 @@ import type {
   UserSortDirection,
 } from "@/features/users/types/users.types";
 import { userSortValues } from "@/features/users/types/users.types";
+import { useQueryStates } from "nuqs";
+import { userSearchParams } from "../schemas/users.schema";
 
 type UserPagination = PaginatedData<ManagedUser>;
 
@@ -55,40 +57,7 @@ const UserListContext = createContext<UserListContextValue | null>(null);
 interface UserListProviderProps extends GlobalLayoutProps {}
 
 export function UserListProvider({ children }: UserListProviderProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const params = useMemo(() => {
-    return {
-      page: Number(searchParams.get("page")) || 1,
-      pageSize: Number(searchParams.get("pageSize")) || 10,
-      search: searchParams.get("search") || "",
-      role: searchParams.get("role") || "",
-      emailVerified: searchParams.get("emailVerified") || "",
-      fromDate: searchParams.get("fromDate") || "",
-      toDate: searchParams.get("toDate") || "",
-      sort: (searchParams.get("sort") as UserSort) || "createdAt",
-      dir: (searchParams.get("dir") as UserSortDirection) || "desc",
-    };
-  }, [searchParams]);
-
-  const setParams = useCallback(
-    (updates: Record<string, unknown>) => {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
-      for (const [key, value] of Object.entries(updates)) {
-        if (value === null || value === undefined || value === "") {
-          current.delete(key);
-        } else {
-          current.set(key, String(value));
-        }
-      }
-      const search = current.toString();
-      const query = search ? `?${search}` : "";
-      router.push(`${pathname}${query}`, { scroll: false });
-    },
-    [searchParams, pathname, router],
-  );
+  const [params, setParams] = useQueryStates(userSearchParams);
   const filters = useMemo<UserListQuery>(
     () => ({
       page: params.page,
