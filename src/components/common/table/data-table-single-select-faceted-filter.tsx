@@ -2,7 +2,7 @@
 
 import { PlusSignCircleIcon, Tick02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState } from "nuqs";
 import { type ComponentType } from "react";
 
 import { cn } from "@/lib/utils";
@@ -40,34 +40,19 @@ export function DataTableSingleSelectFacetedFilter({
 	onValueChange,
 	options
 }: DataTableSingleSelectFacetedFilterProps) {
-	const router = useRouter();
-	const pathname = usePathname();
-	const searchParams = useSearchParams();
-	const queryValue = searchParams.get(queryParameter);
-
-	const setQueryValue = (value: string | null) => {
-		const current = new URLSearchParams(Array.from(searchParams.entries()));
-		if (value === null) {
-			current.delete(queryParameter);
-		} else {
-			current.set(queryParameter, value);
-		}
-		const search = current.toString();
-		const query = search ? `?${search}` : "";
-		router.push(`${pathname}${query}`, { scroll: false });
-	};
+	const [queryValue, setQueryValue] = useQueryState(queryParameter);
 
 	const selectedOption = options?.find(option => option.value === queryValue) ?? null;
 
 	const handleSelect = (value: string) => {
 		// Clicking the already-selected option deselects it
 		const nextValue = queryValue === value ? null : value;
-		setQueryValue(nextValue);
+		void setQueryValue(nextValue);
 		onValueChange?.(nextValue);
 	};
 
 	const handleClearFilter = () => {
-		setQueryValue(null);
+		void setQueryValue(null);
 		onValueChange?.(null);
 	};
 

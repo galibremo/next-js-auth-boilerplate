@@ -2,7 +2,7 @@
 
 import { PlusSignCircleIcon, Tick02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState } from "nuqs";
 import { useMemo, type ComponentType } from "react";
 
 import { cn } from "@/lib/utils";
@@ -40,22 +40,7 @@ export function DataTableMultiSelectFacetedFilter({
 	onValueChange,
 	options
 }: DataTableMultiSelectFacetedFilterProps) {
-	const router = useRouter();
-	const pathname = usePathname();
-	const searchParams = useSearchParams();
-	const queryValue = searchParams.get(queryParameter);
-
-	const setQueryValue = (value: string | null) => {
-		const current = new URLSearchParams(Array.from(searchParams.entries()));
-		if (value === null) {
-			current.delete(queryParameter);
-		} else {
-			current.set(queryParameter, value);
-		}
-		const search = current.toString();
-		const query = search ? `?${search}` : "";
-		router.push(`${pathname}${query}`, { scroll: false });
-	};
+	const [queryValue, setQueryValue] = useQueryState(queryParameter);
 
 	const selectedValues = useMemo(() => {
 		return queryValue ? queryValue.split(",").filter(Boolean) : [];
@@ -65,18 +50,18 @@ export function DataTableMultiSelectFacetedFilter({
 		if (selectedValues.includes(value)) {
 			const filteredValues = selectedValues.filter(selectedValue => selectedValue !== value);
 			const nextValue = filteredValues.length > 0 ? filteredValues.join(",") : null;
-			setQueryValue(nextValue);
+			void setQueryValue(nextValue);
 			onValueChange?.(nextValue);
 			return;
 		}
 
 		const nextValue = [...selectedValues, value].join(",");
-		setQueryValue(nextValue);
+		void setQueryValue(nextValue);
 		onValueChange?.(nextValue);
 	};
 
 	const handleClearFilter = () => {
-		setQueryValue(null);
+		void setQueryValue(null);
 		onValueChange?.(null);
 	};
 

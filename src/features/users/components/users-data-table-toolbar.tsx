@@ -98,7 +98,7 @@ export function UsersDataTableToolbar<TData>({
             title="Role"
             queryParameter="role"
             options={userRoleFilterOptions}
-            onValueChange={() => handleOptionFilter("page", "1")}
+            onValueChange={(val) => handleOptionFilter("role", val)}
           />
           <DataTableSingleSelectFacetedFilter
             title="Email Verified"
@@ -107,7 +107,7 @@ export function UsersDataTableToolbar<TData>({
               { label: "Verified", value: "true" },
               { label: "Unverified", value: "false" },
             ]}
-            onValueChange={() => handleOptionFilter("page", "1")}
+            onValueChange={(val) => handleOptionFilter("emailVerified", val)}
           />
           {hasFilters ? (
             <Button

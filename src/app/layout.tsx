@@ -8,6 +8,7 @@ import QueryProvider from "@/providers/query-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "sonner";
 import { getSessionUser } from "@/lib/services";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -51,17 +52,19 @@ export default async function RootLayout({
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col">
         <AuthProvider user={user}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <QueryProvider>
-              <TooltipProvider>{children}</TooltipProvider>
-              <Toaster richColors position="top-right" />
-            </QueryProvider>
-          </ThemeProvider>
+          <NuqsAdapter>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <QueryProvider>
+                <TooltipProvider>{children}</TooltipProvider>
+                <Toaster richColors position="top-right" />
+              </QueryProvider>
+            </ThemeProvider>
+          </NuqsAdapter>
         </AuthProvider>
       </body>
     </html>

@@ -53,7 +53,13 @@ export function useResourceListHandlers({
 					pageSize: Number(normalizedValue) || defaultPageSize,
 					page: 1
 				});
+				return;
 			}
+
+			void setParams({
+				[key]: normalizedValue || null,
+				page: 1
+			});
 		},
 		[defaultPageSize, setParams]
 	);
