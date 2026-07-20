@@ -3,7 +3,7 @@
 import { PlusSignCircleIcon, Tick02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useQueryState } from "nuqs";
-import { useMemo, type ComponentType } from "react";
+import { type ComponentType } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -46,23 +46,12 @@ export function DataTableSingleSelectFacetedFilter({
 }: DataTableSingleSelectFacetedFilterProps) {
   const [queryValue, setQueryValue] = useQueryState(queryParameter);
 
-  const selectedValues = useMemo(() => {
-    return queryValue ? queryValue.split(",").filter(Boolean) : [];
-  }, [queryValue]);
+  const selectedOption =
+    options?.find((option) => option.value === queryValue) ?? null;
 
   const handleSelect = (value: string) => {
-    if (selectedValues.includes(value)) {
-      const filteredValues = selectedValues.filter(
-        (selectedValue) => selectedValue !== value,
-      );
-      const nextValue =
-        filteredValues.length > 0 ? filteredValues.join(",") : null;
-      void setQueryValue(nextValue);
-      onValueChange?.(nextValue);
-      return;
-    }
-
-    const nextValue = [...selectedValues, value].join(",");
+    // Clicking the already-selected option deselects it
+    const nextValue = queryValue === value ? null : value;
     void setQueryValue(nextValue);
     onValueChange?.(nextValue);
   };
@@ -72,17 +61,13 @@ export function DataTableSingleSelectFacetedFilter({
     onValueChange?.(null);
   };
 
-  const hasSelectedValues =
-    selectedValues.length > 0 &&
-    Boolean(options?.some((option) => selectedValues.includes(option.value)));
-
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
           <HugeiconsIcon icon={PlusSignCircleIcon} />
           {title}
-          {hasSelectedValues ? (
+          {selectedOption ? (
             <>
               <Separator
                 orientation="vertical"
@@ -90,32 +75,10 @@ export function DataTableSingleSelectFacetedFilter({
               />
               <Badge
                 variant="secondary"
-                className="rounded-sm px-1 font-normal lg:hidden"
+                className="rounded-sm px-1 font-normal"
               >
-                {selectedValues.length}
+                {selectedOption.label}
               </Badge>
-              <div className="hidden space-x-1 lg:flex">
-                {selectedValues.length > 2 ? (
-                  <Badge
-                    variant="secondary"
-                    className="rounded-sm px-1 font-normal"
-                  >
-                    {selectedValues.length} selected
-                  </Badge>
-                ) : (
-                  options
-                    ?.filter((option) => selectedValues.includes(option.value))
-                    .map((option) => (
-                      <Badge
-                        variant="secondary"
-                        key={option.value}
-                        className="rounded-sm px-1 font-normal"
-                      >
-                        {option.label}
-                      </Badge>
-                    ))
-                )}
-              </div>
             </>
           ) : null}
         </Button>
@@ -127,7 +90,7 @@ export function DataTableSingleSelectFacetedFilter({
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {options?.map((option) => {
-                const isSelected = selectedValues.includes(option.value);
+                const isSelected = queryValue === option.value;
 
                 return (
                   <CommandItem
@@ -151,7 +114,7 @@ export function DataTableSingleSelectFacetedFilter({
                 );
               })}
             </CommandGroup>
-            {hasSelectedValues ? (
+            {selectedOption ? (
               <>
                 <CommandSeparator />
                 <CommandGroup>
@@ -159,7 +122,7 @@ export function DataTableSingleSelectFacetedFilter({
                     onSelect={handleClearFilter}
                     className="justify-center text-center"
                   >
-                    Clear filters
+                    Clear filter
                   </CommandItem>
                 </CommandGroup>
               </>
