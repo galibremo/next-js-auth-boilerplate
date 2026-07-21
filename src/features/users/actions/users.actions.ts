@@ -1,3 +1,4 @@
+import { fetchClient } from "@/lib/api/client";
 import { createUserListQuery } from "@/features/users/schemas/users-api.schema";
 import type {
   CreateUserInput,
@@ -13,83 +14,55 @@ import type {
 } from "@/features/users/types/users.types";
 import { apiRoute } from "@/routes/routes";
 
-import { fetchClient } from "@/lib/api/client";
-
-export async function listUsers(
-  filters?: UserListQuery,
-): Promise<UserListResponse> {
-  const params = createUserListQuery(filters);
-  const queryParams = new URLSearchParams(
-    Object.entries(params).reduce((acc, [key, value]) => {
-      if (value !== undefined) acc[key] = String(value);
-      return acc;
-    }, {} as Record<string, string>)
-  ).toString();
-  
-  const res = await fetchClient(`${apiRoute.users}${queryParams ? `?${queryParams}` : ""}`, {
+export async function listUsers(filters?: UserListQuery): Promise<UserListResponse> {
+  return fetchClient<UserListResponse>({
     method: "GET",
+    url: apiRoute.users,
+    params: createUserListQuery(filters),
   });
-  const json = await res.json();
-  return json.data;
 }
 
 export async function getUser(id: string): Promise<ManagedUser> {
-  const res = await fetchClient(apiRoute.user(id), {
+  return fetchClient<ManagedUser>({
     method: "GET",
+    url: apiRoute.user(id),
   });
-  const json = await res.json();
-  return json.data;
 }
 
 export async function createUser(data: CreateUserInput): Promise<ManagedUser> {
-  const res = await fetchClient(apiRoute.users, {
+  return fetchClient<ManagedUser>({
     method: "POST",
-    body: JSON.stringify(data),
+    url: apiRoute.users,
+    body: data,
   });
-  const json = await res.json();
-  return json.data;
 }
 
-export async function updateUser({
-  id,
-  ...data
-}: UpdateUserInput): Promise<ManagedUser> {
-  const res = await fetchClient(apiRoute.user(id), {
+export async function updateUser({ id, ...data }: UpdateUserInput): Promise<ManagedUser> {
+  return fetchClient<ManagedUser>({
     method: "PATCH",
-    body: JSON.stringify(data),
+    url: apiRoute.user(id),
+    body: data,
   });
-  const json = await res.json();
-  return json.data;
 }
 
-export async function updateUserRole({
-  id,
-  role,
-}: UpdateUserRoleInput): Promise<ManagedUser> {
-  const res = await fetchClient(apiRoute.userRole(id), {
+export async function updateUserRole({ id, role }: UpdateUserRoleInput): Promise<ManagedUser> {
+  return fetchClient<ManagedUser>({
     method: "PATCH",
-    body: JSON.stringify({ role }),
+    url: apiRoute.userRole(id),
+    body: { role },
   });
-  const json = await res.json();
-  return json.data;
 }
 
-export async function deleteUser({
-  id,
-}: DeleteUserInput): Promise<DeleteUserResponse> {
-  const res = await fetchClient(apiRoute.user(id), {
+export async function deleteUser({ id }: DeleteUserInput): Promise<DeleteUserResponse> {
+  return fetchClient<DeleteUserResponse>({
     method: "DELETE",
+    url: apiRoute.user(id),
   });
-  const json = await res.json();
-  return json.data;
 }
 
-export async function revokeUserSessions({
-  id,
-}: RevokeUserSessionsInput): Promise<RevokeUserSessionsResponse> {
-  const res = await fetchClient(apiRoute.userSessionsRevoke(id), {
+export async function revokeUserSessions({ id }: RevokeUserSessionsInput): Promise<RevokeUserSessionsResponse> {
+  return fetchClient<RevokeUserSessionsResponse>({
     method: "POST",
+    url: apiRoute.userSessionsRevoke(id),
   });
-  const json = await res.json();
-  return json.data;
 }

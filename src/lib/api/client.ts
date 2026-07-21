@@ -3,23 +3,62 @@ import { ApiError, ApiErrorPayload } from "@/lib/api/errors";
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
-/**
- * A wrapper around fetch that automatically includes credentials (cookies)
- * and the base API URL.
- */
-export async function fetchClient(
-  endpoint: string,
-  options: RequestInit = {},
-): Promise<Response> {
-  const url = `${API_URL}${endpoint}`;
 
-  const headers = new Headers(options.headers);
-  if (!headers.has("Content-Type") && !(options.body instanceof FormData)) {
+export interface FetchClientOptions extends Omit<RequestInit, "body"> {
+  /** The API endpoint path, e.g. "/sessions" */
+  url: string;
+  /** Query-string params — undefined/null values are omitted automatically. */
+  params?: object;
+  /** Request body — plain objects are auto-serialised to JSON. */
+  body?: BodyInit | object | null;
+}
+
+/**
+ * A typed fetch wrapper that:
+ *  - Accepts a single options object (url, method, params, body, …)
+ *  - Auto-builds query strings from `params`
+ *  - Auto-serialises plain-object `body` values to JSON
+ *  - Parses the response and unwraps `json.data`
+ *  - Throws a typed `ApiError` on non-2xx responses
+ */
+export async function fetchClient<T = unknown>(
+  options: FetchClientOptions,
+): Promise<T> {
+  const { url: endpoint, params, body, ...rest } = options;
+
+  // Build query string from params, skipping undefined/null entries
+  let url = `${API_URL}${endpoint}`;
+  if (params) {
+    const qs = new URLSearchParams(
+      Object.entries(params as Record<string, unknown>).reduce<Record<string, string>>((acc, [key, value]) => {
+        if (value !== undefined && value !== null) acc[key] = String(value);
+        return acc;
+      }, {}),
+    ).toString();
+    if (qs) url += `?${qs}`;
+  }
+
+  // Serialize plain objects to JSON; leave BodyInit values (string, FormData, etc.) as-is
+  const serializedBody: BodyInit | null | undefined =
+    body !== null &&
+    body !== undefined &&
+    typeof body === "object" &&
+    !(body instanceof FormData) &&
+    !(body instanceof URLSearchParams) &&
+    !(body instanceof Blob) &&
+    !(body instanceof ArrayBuffer) &&
+    !(body instanceof ReadableStream)
+      ? JSON.stringify(body)
+      : (body as BodyInit | null | undefined);
+
+  const headers = new Headers(rest.headers);
+  if (!headers.has("Content-Type") && !(body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
 
   const response = await fetch(url, {
-    ...options,
+    ...rest,
+    body: serializedBody,
     headers,
     // This is crucial for sending and receiving HTTP-only cookies
     credentials: "include",
@@ -31,13 +70,19 @@ export async function fetchClient(
     try {
       errorData = await response.clone().json();
       errorMessage = errorData.message || errorMessage;
-    } catch (e) {
+    } catch {
       // Ignore JSON parse error on error response
     }
-    
+
     const payload: ApiErrorPayload = {
       statusCode: response.status,
-      code: errorData.code || (response.status === 401 ? "unauthorized" : response.status === 403 ? "forbidden" : "unknown_error"),
+      code:
+        errorData.code ||
+        (response.status === 401
+          ? "unauthorized"
+          : response.status === 403
+            ? "forbidden"
+            : "unknown_error"),
       message: errorMessage,
       error: errorData.error,
       meta: errorData.meta,
@@ -49,5 +94,6 @@ export async function fetchClient(
     throw new ApiError(payload, response.status);
   }
 
-  return response;
+  const json = await response.json();
+  return json.data as T;
 }

@@ -1,11 +1,11 @@
 import { fetchClient } from "@/lib/api/client";
+import { apiRoute } from "@/routes/routes";
 import { RegisterSchemaType } from "../schemas/register-schema";
 
-export async function register(data: RegisterSchemaType) {
-  const res = await fetchClient("/auth/register", {
+export async function register(data: RegisterSchemaType): Promise<AuthUser> {
+  return fetchClient<AuthUser>({
     method: "POST",
-    body: JSON.stringify(data),
+    url: apiRoute.register,
+    body: data,
   });
-  const json = await res.json();
-  return json.data;
 }

@@ -1,26 +1,26 @@
 import { fetchClient } from "@/lib/api/client";
+import { apiRoute } from "@/routes/routes";
 import { LoginSchemaType } from "../schemas/login-schema";
 
-export async function login(data: LoginSchemaType) {
-  const res = await fetchClient("/auth/login", {
+export async function login(data: LoginSchemaType): Promise<AuthUser> {
+  return fetchClient<AuthUser>({
     method: "POST",
-    body: JSON.stringify(data),
+    url: apiRoute.login,
+    body: data,
   });
-  const json = await res.json();
-  return json.data;
 }
 
-export async function googleLogin(idToken: string) {
-  const res = await fetchClient("/auth/google", {
+export async function googleLogin(idToken: string): Promise<AuthUser> {
+  return fetchClient<AuthUser>({
     method: "POST",
-    body: JSON.stringify({ idToken }),
+    url: apiRoute.googleLogin,
+    body: { idToken },
   });
-  const json = await res.json();
-  return json.data;
 }
 
-export async function logout() {
-  return await fetchClient("/auth/logout", {
+export async function logout(): Promise<void> {
+  return fetchClient<void>({
     method: "POST",
+    url: apiRoute.logout,
   });
 }
