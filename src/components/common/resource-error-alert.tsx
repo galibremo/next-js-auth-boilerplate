@@ -1,9 +1,9 @@
 "use client";
 
-import { LuCircleAlert } from "react-icons/lu";
-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Alert01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 
 interface ResourceErrorAlertProps {
   error: unknown;
@@ -20,7 +20,7 @@ export function ResourceErrorAlert({
 }: ResourceErrorAlertProps) {
   return (
     <Alert variant="destructive" className="py-4">
-      <LuCircleAlert className="mt-0.5 shrink-0" />
+      <HugeiconsIcon icon={Alert01Icon} className="mt-0.5 shrink-0" />
       <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0 space-y-1">
           <AlertTitle>{title}</AlertTitle>
