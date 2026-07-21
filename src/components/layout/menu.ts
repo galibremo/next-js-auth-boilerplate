@@ -33,6 +33,11 @@ const navPlatformItem: NavItemProps[] = [
     icon: UserGroupIcon,
     roles: ["ADMIN", "SUPER_ADMIN"],
   },
+  {
+    title: "Sessions",
+    url: route.private.sessions,
+    icon: ComputerProtectionIcon,
+  },
 ];
 
 export { navPlatformItem, userItems };
