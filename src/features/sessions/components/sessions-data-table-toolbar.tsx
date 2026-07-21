@@ -54,7 +54,7 @@ const sessionDeviceTypeFilterOptions = [
   { label: "Desktop", value: "desktop" },
   { label: "Mobile", value: "mobile" },
   { label: "Tablet", value: "tablet" },
-  { label: "Unknown", value: "Unknown" },
+  { label: "Unknown", value: "unknown" },
 ];
 
 export function SessionsDataTableToolbar<TData>({
