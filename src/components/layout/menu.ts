@@ -3,6 +3,8 @@ import {
   DashboardSquare01Icon,
   UserGroupIcon,
   UserIcon,
+  Mail01Icon,
+  MailSettingIcon,
 } from "@hugeicons/core-free-icons";
 
 import { route } from "@/routes/routes";
@@ -40,4 +42,25 @@ const navPlatformItem: NavItemProps[] = [
   },
 ];
 
-export { navPlatformItem, userItems };
+const navEmailItem: NavItemProps[] = [
+  {
+    title: "Email Providers",
+    url: route.private.emailProviders,
+    icon: Mail01Icon,
+    roles: ["ADMIN", "SUPER_ADMIN"],
+  },
+  {
+    title: "Email Logs",
+    url: route.private.emailLogs,
+    icon: Mail01Icon,
+    roles: ["ADMIN", "SUPER_ADMIN"],
+  },
+  {
+    title: "Email Templates",
+    url: route.private.emailTemplates,
+    icon: MailSettingIcon,
+    roles: ["ADMIN", "SUPER_ADMIN"],
+  },
+];
+
+export { navPlatformItem, userItems, navEmailItem };

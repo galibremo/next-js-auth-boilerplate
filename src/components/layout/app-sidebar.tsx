@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 import { AppSwitcher } from "./app-switcher";
 import { NavMenu } from "./nav-menu";
-import { navPlatformItem, userItems } from "./menu";
+import { navEmailItem, navPlatformItem, userItems } from "./menu";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -27,6 +27,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMenu label="Platform" items={navPlatformItem} />
+        <NavMenu label="Email" items={navEmailItem} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser items={userItems} />
