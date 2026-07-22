@@ -107,7 +107,7 @@ export function EmailProviderDataTableRowActions({
   return (
     <div className="flex items-center gap-2">
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button
             type="button"
             variant="ghost"
