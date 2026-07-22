@@ -11,6 +11,8 @@ export interface FetchClientOptions extends Omit<RequestInit, "body"> {
   params?: object;
   /** Request body — plain objects are auto-serialised to JSON. */
   body?: BodyInit | object | null;
+  /** Request data — alias for body */
+  data?: BodyInit | object | null;
 }
 
 /**
@@ -24,7 +26,8 @@ export interface FetchClientOptions extends Omit<RequestInit, "body"> {
 export async function fetchClient<T = unknown>(
   options: FetchClientOptions,
 ): Promise<T> {
-  const { url: endpoint, params, body, ...rest } = options;
+  const { url: endpoint, params, body, data, ...rest } = options;
+  const actualBody = body !== undefined ? body : data;
 
   // Build query string from params, skipping undefined/null entries
   let url = `${API_URL}${endpoint}`;
@@ -40,19 +43,19 @@ export async function fetchClient<T = unknown>(
 
   // Serialize plain objects to JSON; leave BodyInit values (string, FormData, etc.) as-is
   const serializedBody: BodyInit | null | undefined =
-    body !== null &&
-    body !== undefined &&
-    typeof body === "object" &&
-    !(body instanceof FormData) &&
-    !(body instanceof URLSearchParams) &&
-    !(body instanceof Blob) &&
-    !(body instanceof ArrayBuffer) &&
-    !(body instanceof ReadableStream)
-      ? JSON.stringify(body)
-      : (body as BodyInit | null | undefined);
+    actualBody !== null &&
+    actualBody !== undefined &&
+    typeof actualBody === "object" &&
+    !(actualBody instanceof FormData) &&
+    !(actualBody instanceof URLSearchParams) &&
+    !(actualBody instanceof Blob) &&
+    !(actualBody instanceof ArrayBuffer) &&
+    !(actualBody instanceof ReadableStream)
+      ? JSON.stringify(actualBody)
+      : (actualBody as BodyInit | null | undefined);
 
   const headers = new Headers(rest.headers);
-  if (!headers.has("Content-Type") && !(body instanceof FormData)) {
+  if (!headers.has("Content-Type") && !(actualBody instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
 
